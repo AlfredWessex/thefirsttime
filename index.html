@@ -6,6 +6,17 @@
   <title>金煎堂 JIN JIAN TANG｜手工鍋貼專賣</title>
   <meta name="description" content="金煎堂 — 金黃酥脆，傳承手藝的極致美味。台灣在地豬肉、每日現包、現點現煎的手工鍋貼專賣店。" />
 
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#2c1b10" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="金煎堂" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <!-- Google Fonts：典雅標題 Noto Serif TC ＋ 無襯線內文 Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -611,6 +622,14 @@
     </div>
   </div>
 
+  <!-- 左下角「安裝 App」按鈕：瀏覽器支援安裝時才會出現 -->
+  <button id="installBtn" type="button" hidden
+     class="fixed bottom-5 left-5 z-40 items-center gap-2 rounded-full bg-wood-900 py-2 pl-2 pr-4 text-sm font-bold text-cream-50 shadow-soft ring-4 ring-wood-900/15 transition hover:-translate-y-0.5 hover:bg-wood-800 sm:bottom-8 sm:left-8"
+     aria-label="把金煎堂安裝到主畫面">
+    <img src="icons/icon-192.png" alt="" class="h-8 w-8 rounded-full" />
+    安裝 App
+  </button>
+
   <!-- 右下角浮動預約按鈕 -->
   <a href="https://calendar.app.google/6LrqJUUDAPdB7NkQ6" target="_blank" rel="noopener"
      class="group fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-ember-500 p-4 font-bold text-white shadow-soft ring-4 ring-ember-500/20 transition hover:-translate-y-0.5 hover:bg-ember-600 focus:outline-none focus-visible:ring-ember-300 sm:bottom-8 sm:right-8 sm:px-5 sm:py-3.5"
@@ -1164,6 +1183,30 @@
     refreshIcons();
   })();
   </script>
+  <!-- PWA：註冊 Service Worker、安裝按鈕 -->
+  <script>
+  (() => {
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+    const btn = document.getElementById('installBtn');
+    let deferred = null;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferred = e;
+      btn.hidden = false; btn.style.display = 'inline-flex';
+    });
+    btn.addEventListener('click', async () => {
+      if (!deferred) return;
+      deferred.prompt();
+      await deferred.userChoice;
+      deferred = null;
+      btn.hidden = true; btn.style.display = '';
+    });
+    window.addEventListener('appinstalled', () => { btn.hidden = true; btn.style.display = ''; });
+  })();
+  </script>
+
   <!-- 店門口人來人往 3D 動畫（Three.js，捲動到附近才載入） -->
   <script>
   (() => {
