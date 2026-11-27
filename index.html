@@ -87,7 +87,6 @@
     .steam { animation: steamUp 2.6s ease-out infinite; transform-box: fill-box; }
     .steam:nth-of-type(2) { animation-delay: .9s; } .steam:nth-of-type(3) { animation-delay: 1.7s; }
     @keyframes steamUp { 0% { transform: translateY(0); opacity: 0; } 25% { opacity: .75; } 100% { transform: translateY(-16px); opacity: 0; } }
-    @media (prefers-reduced-motion: reduce) { .walker *, .steam { animation: none !important; } }
   </style>
 </head>
 
@@ -1210,7 +1209,6 @@
     const scene = document.getElementById('streetScene');
     if (!scene) return;
     const layer = scene.querySelector('.walkers');
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const pick = a => a[Math.floor(Math.random() * a.length)];
     const rand = (a, b) => a + Math.random() * (b - a);
     const SHIRTS = ['#e8792a', '#c4a07a', '#4f7c8a', '#7a9a5b', '#b5524b', '#3f5d7d', '#d9a441', '#8a6fa8', '#f2efe9', '#5b3a22'];
@@ -1310,7 +1308,7 @@
       }
       raf = requestAnimationFrame(loop);
     }
-    const start = () => { if (!raf && visible && !reduce) { last = 0; raf = requestAnimationFrame(loop); } };
+    const start = () => { if (!raf && visible) { last = 0; raf = requestAnimationFrame(loop); } };
     const stop = () => { cancelAnimationFrame(raf); raf = 0; };
 
     for (let i = 0; i < target(); i++) spawn(false);
